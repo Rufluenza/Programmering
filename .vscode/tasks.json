@@ -1,0 +1,29 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "assemble-and-link",
+            "type": "shell",
+            "command": "as",
+            "args": [
+                "main.asm",
+                "-o",
+                "main.o"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "link",
+            "type": "shell",
+            "command": "ld",
+            "args": [
+                "main.o",
+                "-o",
+                "main"
+            ]
+        }
+    ]
+}
