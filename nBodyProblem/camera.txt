@@ -1,0 +1,90 @@
+
+
+// Make the camera move
+// Camera controller variables
+let cameraPosition = new Vector(0, 0, 5);
+let cameraRotation = new Vector(0, 0, 0);
+let moveSpeed = 0.1;
+let rotationSpeed = 0.005;
+
+// Mouse state
+let mouseDown = false;
+let lastMouseX = 0;
+let lastMouseY = 0;
+
+// Event listeners
+canvas.requestPointerLock = canvas.requestPointerLock ||
+                            canvas.mozRequestPointerLock;
+
+document.addEventListener('pointerlockchange', lockChangeAlert, false);
+document.addEventListener('mozpointerlockchange', lockChangeAlert, false);
+
+canvas.addEventListener('mousedown', lockMouse, false);
+canvas.addEventListener('mousemove', rotateCamera, false);
+
+// Key state
+let keyState = {};
+document.addEventListener('keydown', (event) => {
+    keyState[event.code] = true;
+});
+document.addEventListener('keyup', (event) => {
+    keyState[event.code] = false;
+});
+
+// Lock mouse function
+function lockMouse() {
+    canvas.requestPointerLock();
+}
+
+// Pointer lock change event handler
+function lockChangeAlert() {
+    if (document.pointerLockElement === canvas ||
+        document.mozPointerLockElement === canvas) {
+        document.addEventListener('mousemove', rotateCamera, false);
+    } else {
+        document.removeEventListener('mousemove', rotateCamera, false);
+    }
+}
+
+// Camera rotation function
+function rotateCamera(event) {
+    let dx = event.movementX;
+    let dy = event.movementY;
+
+    vec3.rotateX(cameraRotation, cameraRotation, vec3.fromValues(-dy * rotationSpeed, 0, 0));
+    vec3.rotateY(cameraRotation, cameraRotation, vec3.fromValues(0, dx * rotationSpeed, 0));
+}
+
+// Camera movement function
+function moveCamera() {
+    let moveVector = new THREE.Vector3();
+
+    if (keyState['KeyW']) {
+        vec3.add(moveVector, moveVector, vec3.fromValues(0, 0, -moveSpeed));
+    }
+    if (keyState['KeyS']) {
+        vec3.add(moveVector, moveVector, vec3.fromValues(0, 0, moveSpeed));
+    }
+    if (keyState['KeyA']) {
+        vec3.add(moveVector, moveVector, vec3.fromValues(-moveSpeed, 0, 0));
+    }
+    if (keyState['KeyD']) {
+        vec3.add(moveVector, moveVector, vec3.fromValues(moveSpeed, 0, 0));
+    }
+
+    vec3.rotateY(moveVector, moveVector, cameraRotation);
+    vec3.add(cameraPosition, cameraPosition, moveVector);
+}
+
+
+
+// Calculate the distance between the two objects using pythagoas theorem
+    // sqrt((x2 - x1)^2 + (y2 - y1)^2 + (z2 - z1)^2)
+    const distance = Math.sqrt(Math.pow(vec2.x - vec1.x, 2) + Math.pow(vec2.y - vec1.y, 2) + Math.pow(vec2.z - vec1.z, 2));
+    const force = G * (mass1 * mass2) / Math.pow(distance, 2);
+    const dotProduct = [((vec1.y * vec2.z)-(vec1.z * vec2.y)), -((vec1.x * vec2.z)-(vec1.z * vec2.x)), ((vec1.x * vec2.y)-(vec1.y * vec2.x))];
+    const length1 = Math.sqrt(Math.pow(vec1.x, 2) + Math.pow(vec1.y, 2) + Math.pow(vec1.z, 2));
+    const length2 = Math.sqrt(Math.pow(vec2.x, 2) + Math.pow(vec2.y, 2) + Math.pow(vec2.z, 2));
+    const angle = Math.atan2(y2 - y1, x2 - x1);
+    const xForce = Math.cos(angle) * force;
+    const yForce = Math.sin(angle) * force;

@@ -15,10 +15,13 @@
         scene.background = new THREE.Color(0x2d2d2d);
 
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.z = 5;
+        camera.speed = 0.1;
+        camera.rotationSpeed = 0.05;
+        //camera.newVector = new THREE.Vector3(0, 0, 0);
+        camera.position.z = 50;
         camera.position.x = -7;
         camera.position.y = 7;
-        camera.lookAt(50, 10, 0);
+        //camera.lookAt(50, 10, 0);
 
         // Create the renderer
         const renderer = new THREE.WebGLRenderer();
@@ -187,8 +190,41 @@
         // TODO: make player into full 3D model
         // Create the cubemap and add the cubes to the scene
         player.createCubeMap();
-        
-        
+
+        // Move the camera with w,a,s,d (forward, left, back, right)
+        // if shift is held down rotate the camera
+        document.addEventListener('keydown', (event) => {
+            
+            //const rotationSpeed = 0.05;
+            const shift = event.shiftKey;
+            const key = event.key.toLowerCase();
+            
+            if (key === 'w') {
+            if (shift) {
+                camera.rotation.x += camera.rotationSpeed;
+            } else {
+                camera.position.z -= camera.speed;
+            }
+            } else if (key === 'a') {
+            if (shift) {
+                camera.rotation.y -= camera.rotationSpeed;
+            } else {
+                camera.position.x -= camera.speed;
+            }
+            } else if (key === 's') {
+            if (shift) {
+                camera.rotation.x -= camera.rotationSpeed;
+            } else {
+                camera.position.z += camera.speed;
+            }
+            } else if (key === 'd') {
+            if (shift) {
+                camera.rotation.y += camera.rotationSpeed;
+            } else {
+                camera.position.x += camera.speed;
+            }
+            }
+        });
 
 
         function animate() {
